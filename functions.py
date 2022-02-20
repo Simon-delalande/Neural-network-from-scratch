@@ -20,7 +20,7 @@ def sigmoid(x):
     return(1/(1+ np.exp(-x)) )
 
 def cross_entropy(y_hat, y):
-    if y == 1:
+    if y == 1.0:
       return -np.log(y_hat)
     else:
       return -np.log(1-y_hat)

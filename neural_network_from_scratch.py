@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 #modèle simple de classification avec une couche cachée
 
-class DNN: 
+class Binary_classifier: 
 
     def __init__(self,n_inputs, n_hidden):
 
@@ -70,11 +70,11 @@ class DNN:
 
 
         #initialization of random weights 
-        W1= np.random.rand(self.n_hidden, self.n_inputs)
-        W2= np.random.rand(1, self.n_hidden)
-        b1= np.random.rand(self.n_hidden)
+        W1= np.random.rand(self.n_hidden, self.n_inputs) - 1/2
+        W2= np.random.rand(1, self.n_hidden) -1/2
+        b1= np.random.rand(self.n_hidden) -1/2
         b1= np.reshape(b1, (self.n_hidden, 1))
-        b2= np.random.rand(1)
+        b2= np.random.rand(1) -1/2
 
         self.change_weights(W1, W2, b1, b2)
 
@@ -135,11 +135,13 @@ class DNN:
 
             
 
-model= DNN(3, 5)
-X= np.array([[1,2,-1], [-1,-6,-1], [3,-2, 0], [-7,4,2]])
-y= np.array([[1], [0], [1], [0]])
+model= Binary_classifier(10, 10)
+X= (np.random.rand(100, 10)-1/2)*2
+y= np.average(X, axis=1)
+y= np.where(y>=0, np.ones(100), np.zeros(100))
+y= np.reshape(y, (100,1))
+model.fit(X ,y, 32, 1e-2, 1000)
 
-model.fit(X, y, 2, 1e-1, 1000)
 
 
 
