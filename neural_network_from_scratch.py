@@ -66,6 +66,8 @@ class Binary_classifier:
         return(loss[0])
 
 
+
+
     def fit(self, X, y, batch_size, learning_rate, epochs):
 
 
@@ -135,12 +137,12 @@ class Binary_classifier:
 
             
 
-model= Binary_classifier(10, 10)
-X= (np.random.rand(100, 10)-1/2)*2
+model= Binary_classifier(6, 5)
+X= (np.random.rand(200, 6)-1/2)*2
 y= np.average(X, axis=1)
-y= np.where(y>=0, np.ones(100), np.zeros(100))
-y= np.reshape(y, (100,1))
-model.fit(X ,y, 32, 1e-2, 1000)
+y= np.where(y>=0, np.ones(200), np.zeros(200))
+y= np.reshape(y, (200,1))
+model.fit(X ,y, 64, 1e-2, 700)
 
 
 
