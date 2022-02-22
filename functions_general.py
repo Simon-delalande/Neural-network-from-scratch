@@ -3,7 +3,7 @@ import random
 
 def relu(x, k):
     if k==0: #0 indicate we are applying the relu function
-        return(np.where(x>=0, x, np.zeros(x.shape)))
+        return(np.where(x>0, x, np.zeros(x.shape)))
 
     elif k ==1: #we are applying the derivative
         return(np.where(x>=0, np.ones(x.shape), np.zeros(x.shape)))

@@ -62,14 +62,14 @@ class neural_net:
 
     def initialize_weights(self):
         if self.size >0:
-            W= np.random.rand(self.layers[1].size, self.input_shape) - 1/2
-            B= np.random.rand(self.layers[1].size) -1/2
+            W= (np.random.rand(self.layers[1].size, self.input_shape) - 1/2)*2
+            B= (np.random.rand(self.layers[1].size) -1/2)*2
             self.layers[1].change_weights(W, B)
 
         if self.size >1:
             for i in range(2, self.size+1):
-                W= np.random.rand(self.layers[i].size, self.layers[i-1].size) - 1/2
-                B= np.random.rand(self.layers[i].size) -1/2
+                W= (np.random.rand(self.layers[i].size, self.layers[i-1].size) - 1/2)*2
+                B= (np.random.rand(self.layers[i].size) -1/2)*2
                 self.layers[i].change_weights(W, B)
 
         else: 
@@ -108,17 +108,19 @@ class neural_net:
     
         return [grad_weights, grad_bias]
 
-    def evalutate(self, X, y):
+    def evaluate(self, X, y):
         l=0
         for i in range(X.shape[0]):
             y_hat=  self.forward_pass(X[i])
             l+= self.loss(y_hat, y[i], 0)
         return(l)
 
-    def fit(self, X, y, batch_size, learning_rate, epochs):
+
+    def fit(self, X, y, X_val, y_val, batch_size, learning_rate, epochs):
 
         self.initialize_weights()
         history= []
+        history_val= []
 
         for i in range(epochs):
 
@@ -176,10 +178,14 @@ class neural_net:
 
                     self.layers[l].change_weights(W, B) 
 
-            l= self.evalutate(X,y)
-            history.append(l[0])
+            lss= self.evaluate(X,y)
+            lss_val= self.evaluate(X_val, y_val)
+            history.append(lss[0])
+            history_val.append(lss_val[0])
 
-        plt.plot(range(epochs), history)
+        plt.plot(range(epochs), history, 'r', label= 'loss')
+        plt.plot(range(epochs), history_val, 'b', label= 'validation loss')
+        plt.legend()
         plt.xlabel('epochs')
         plt.ylabel('loss')
         plt.show()
@@ -191,18 +197,29 @@ class neural_net:
 
 model= neural_net()
 model.add_input_layer(10)
-model.add_layer(5, relu)
-model.add_layer(2, relu)
-model.add_layer(1, relu)
-model.compile(MSE)
+model.add_layer(16, relu)
+model.add_layer(32, relu)
+model.add_layer(1, sigmoid)
+model.compile(cross_entropy)
 
 X= np.random.rand(500, 10)-1/2
-"""y= np.average(X, axis=1)
+y= np.average(X, axis=1)
 y= np.where(y>=0, np.ones(500), np.zeros(500))
 y= np.reshape(y, (500,1))
 
-model.fit(X,y, 32, 1e-2, 700)
-"""
+X_val= np.random.rand(200, 10)-1/2
+y_val=  np.average(X_val, axis=1)
+y_val= np.where(y_val>=0, np.ones(200), np.zeros(200))
+y_val= np.reshape(y_val, (200,1))
+
+model.fit(X,y,X_val, y_val, 32, 1e-2, 700)
+
+
+'''
 y= np.average(X, axis=1)
 
-model.fit(X,y, 32, 1e-2, 80)
+X_val= np.random.rand(400, 10)-1/2
+y_val= np.average(X_val, axis=1)
+
+model.fit(X,y,X_val, y_val, 16, 1e-3, 100)
+'''
